@@ -4,7 +4,6 @@ import { ArrowRight, Heart, ShoppingBag } from 'lucide-react'
 import { productById } from '@/data/products'
 import { brandById, categoryById } from '@/data/catalog-meta'
 import { Modal } from '@/components/ui/Overlay'
-import { PartArt } from '@/components/art/PartArt'
 import { Price } from '@/components/ui/Price'
 import { Rating } from '@/components/ui/Rating'
 import { useUi } from '@/store/ui'
@@ -13,6 +12,7 @@ import { useProductActions } from './useProductActions'
 import { FitBadge } from './FitBadge'
 import { ProductStickers } from './ProductStickers'
 import { StockLabel } from './StockLabel'
+import { ProductImage } from './ProductImage'
 
 function QuickViewBody({ id }: { id: string }) {
   const product = productById[id]
@@ -22,7 +22,7 @@ function QuickViewBody({ id }: { id: string }) {
   return (
     <div className="grid gap-5 p-4 sm:grid-cols-2 sm:p-6">
       <div className="aspect-square overflow-hidden rounded-3xl bg-[var(--glass)]">
-        <PartArt kind={product.art} hue={product.hue} label={cat.jp} className="h-full w-full" />
+        <ProductImage product={product} width={420} />
       </div>
       <div className="flex flex-col">
         <ProductStickers product={product} />

@@ -3,7 +3,6 @@ import { ArrowRight, Heart, ShieldCheck, Trash2, Truck } from 'lucide-react'
 import { brandById } from '@/data/catalog-meta'
 import { useShowcase } from '@/api/hooks'
 import { Container, PageHeader } from '@/components/layout/Container'
-import { PartArt } from '@/components/art/PartArt'
 import { QtyStepper } from '@/components/ui/QtyStepper'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { SectionHeading } from '@/components/ui/SectionHeading'
@@ -17,6 +16,7 @@ import { useWishlist } from '@/store/collections'
 import { toast } from '@/store/ui'
 import { formatPrice, pluralize } from '@/lib/utils'
 import { usePageTitle } from '@/lib/hooks'
+import { ProductImage } from '@/components/product/ProductImage'
 
 export default function Cart() {
   usePageTitle('Корзина')
@@ -56,7 +56,7 @@ export default function Cart() {
           {totals.items.map(({ product, qty, sum }) => (
             <article key={product.id} className="glass grid grid-cols-[96px_1fr] gap-4 rounded-3xl p-3 sm:grid-cols-[130px_1fr_auto] sm:p-4">
               <Link to={`/product/${product.slug}`} className="aspect-square overflow-hidden rounded-2xl bg-[var(--glass)]">
-                <PartArt kind={product.art} hue={product.hue} className="h-full w-full" />
+                <ProductImage product={product} width={160} />
               </Link>
               <div className="min-w-0">
                 <p className="text-xs font-extrabold uppercase tracking-wider text-muted">{brandById[product.brandId].name}</p>

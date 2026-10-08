@@ -3,7 +3,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Hash, ScanLine, Search, Star, Zap } from 'lucide-react'
 import { CarPicker } from '@/components/garage/CarPicker'
-import { CarSilhouette } from '@/components/art/CarSilhouette'
+import { Photo } from '@/components/art/Photo'
+import { heroPhoto } from '@/data/photos'
 import { Mascot } from '@/components/art/Mascot'
 import { PartArt } from '@/components/art/PartArt'
 import { Container } from '@/components/layout/Container'
@@ -40,62 +41,22 @@ function HeroScene() {
         my.set(0)
       }}
     >
-      <div className="glass absolute inset-0 overflow-hidden rounded-[36px]">
-        <motion.svg viewBox="0 0 600 540" className="absolute inset-0 h-full w-full" style={far} aria-hidden>
-          <defs>
-            <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#ffe36b" />
-              <stop offset=".55" stopColor="#ff6aa8" />
-              <stop offset="1" stopColor="#8f5cff" />
-            </linearGradient>
-            <mask id="sunStripes">
-              <rect width="600" height="540" fill="#fff" />
-              {[0, 1, 2, 3, 4, 5].map((i) => (
-                <rect key={i} x="0" y={262 + i * 22} width="600" height={4 + i * 2.4} fill="#000" />
-              ))}
-            </mask>
-            <linearGradient id="fuji" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#4b2b8f" />
-              <stop offset="1" stopColor="#1a0d33" />
-            </linearGradient>
-            <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="#ff4fa3" stopOpacity=".0" />
-              <stop offset="1" stopColor="#ff4fa3" stopOpacity=".25" />
-            </linearGradient>
-          </defs>
-          <circle cx="330" cy="250" r="150" fill="url(#sun)" mask="url(#sunStripes)" opacity=".95" />
-          <circle cx="330" cy="250" r="190" fill="none" stroke="#ff8fc4" strokeOpacity=".18" strokeWidth="2" strokeDasharray="4 10" />
-          <path d="M40,392 L210,248 Q236,226 262,226 L292,226 Q318,226 344,248 L560,392 Z" fill="url(#fuji)" />
-          <path d="M210,248 Q236,226 262,226 L292,226 Q318,226 344,248 L322,262 L300,250 L278,268 L256,252 L232,266 Z" fill="#fff" opacity=".92" />
-          {/* тории */}
-          <g transform="translate(70 250)" fill="#ff3d6e">
-            <rect x="0" y="0" width="150" height="14" rx="5" />
-            <rect x="12" y="26" width="126" height="9" />
-            <rect x="26" y="10" width="13" height="132" />
-            <rect x="111" y="10" width="13" height="132" />
-            <rect x="69" y="14" width="12" height="20" />
-          </g>
-          {/* сетка-пол */}
-          <rect x="0" y="392" width="600" height="148" fill="url(#floor)" />
-          {Array.from({ length: 15 }, (_, i) => (
-            <line key={`v${i}`} x1={300 + (i - 7) * 26} y1="392" x2={300 + (i - 7) * 120} y2="540" stroke="#ff7ab8" strokeOpacity=".35" strokeWidth="1.2" />
-          ))}
-          {[0, 1, 2, 3, 4, 5].map((i) => (
-            <line key={`h${i}`} x1="0" x2="600" y1={392 + Math.pow(i, 1.7) * 9} y2={392 + Math.pow(i, 1.7) * 9} stroke="#3de8ff" strokeOpacity=".3" strokeWidth="1.2" />
-          ))}
-          <line x1="0" x2="600" y1="392" y2="392" stroke="#ff9fd0" strokeWidth="2" strokeOpacity=".7" />
-        </motion.svg>
-        <div className="speedlines absolute inset-0 opacity-40" />
-      </div>
-
-      {/* машина */}
-      <motion.div className="absolute inset-x-[4%] bottom-[7%]" style={near}>
-        <motion.div initial={{ x: -80, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3, type: 'spring', stiffness: 60, damping: 14 }}>
-          <div className="animate-float-slow">
-            <CarSilhouette shape="coupe" hue={330} plate="2JZ" />
-          </div>
+      <div className="glass absolute inset-0 overflow-hidden rounded-[36px] p-0">
+        <motion.div className="absolute -inset-[6%]" style={far}>
+          <Photo id={heroPhoto} alt="Два Nissan Skyline GT-R R34 на фоне горы Фудзи" width={900} eager className="h-full w-full" imgClassName="object-[50%_78%]" />
         </motion.div>
-      </motion.div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0d0820]/55 via-transparent to-[#0d0820]/25" />
+        <div className="absolute inset-0 bg-gradient-to-tr from-pink/30 via-transparent to-cyan/20 mix-blend-overlay" />
+        <div className="halftone absolute inset-x-0 bottom-0 h-1/3 opacity-25 [mask-image:linear-gradient(transparent,black)]" />
+        <motion.span
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="absolute bottom-4 right-4 rounded-xl border border-white/25 bg-black/35 px-3 py-1.5 text-[0.7rem] font-bold text-white backdrop-blur-md"
+        >
+          📍 富士山 · Skyline GT-R R34
+        </motion.span>
+      </div>
 
       {/* неоновая вывеска */}
       <motion.div style={mid} className="absolute right-[5%] top-[7%]">
@@ -126,9 +87,9 @@ function HeroScene() {
       </motion.div>
 
       {/* маскот с репликой */}
-      <motion.div style={mid} className="absolute bottom-[38%] left-[2%] flex items-end gap-1 sm:bottom-[40%]">
+      <motion.div style={mid} className="absolute left-[3%] top-[15%] flex items-end gap-1">
         <Mascot mood="wink" className="h-20 w-20 animate-float sm:h-24 sm:w-24" />
-        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.9, type: 'spring' }} className="bubble mb-16 max-w-[170px] origin-bottom-left text-[0.72rem] leading-snug sm:mb-20 sm:text-xs">
+        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.9, type: 'spring' }} className="bubble mb-14 max-w-[170px] origin-bottom-left text-[0.72rem] leading-snug sm:mb-16 sm:text-xs">
           Сэмпай, твоей Supra нужны новые колодки~ (◕‿◕)
         </motion.div>
       </motion.div>

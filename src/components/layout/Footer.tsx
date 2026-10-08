@@ -88,7 +88,13 @@ export function Footer() {
           ))}
         </div>
         <div className="divider-dashed relative mt-10 flex flex-col gap-4 pt-6 text-xs text-faint md:flex-row md:items-center md:justify-between">
-          <p>© 2026 SENPAI.PARTS · Демо-магазин. Названия брендов принадлежат их владельцам. Сделано с 💖 и 2JZ.</p>
+          <p>
+            © 2026 SENPAI.PARTS · Демо-магазин. Названия брендов принадлежат их владельцам. Фото —{' '}
+            <a href="https://unsplash.com/license" target="_blank" rel="noreferrer" className="underline hover:text-pink">
+              Unsplash
+            </a>
+            . Сделано с 💖 и 2JZ.
+          </p>
           <div className="flex flex-wrap gap-2">
             {['МИР', 'VISA', 'Mastercard', 'СБП', 'Сплит'].map((p) => (
               <span key={p} className="rounded-lg border border-line px-2.5 py-1 font-bold text-muted">

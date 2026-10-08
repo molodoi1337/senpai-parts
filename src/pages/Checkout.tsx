@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Check, Lock, MapPin, User, Wallet, ClipboardCheck } from 'lucide-react'
 import { deliveryOptions, paymentOptions } from '@/data/site'
 import { Container, PageHeader } from '@/components/layout/Container'
-import { PartArt } from '@/components/art/PartArt'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { PromoField, SummaryRows } from '@/components/cart/Summary'
 import { useCart, useCartTotals } from '@/store/cart'
@@ -12,6 +11,7 @@ import { useUser, type Order } from '@/store/user'
 import { toast } from '@/store/ui'
 import { addDays, cn, formatDay, formatPrice, sleep } from '@/lib/utils'
 import { usePageTitle } from '@/lib/hooks'
+import { ProductImage } from '@/components/product/ProductImage'
 
 const steps = [
   { id: 'contacts', label: 'Контакты', icon: User },
@@ -336,7 +336,7 @@ export default function Checkout() {
                     {totals.items.map(({ product, qty, sum }) => (
                       <li key={product.id} className="flex items-center gap-3 p-3">
                         <span className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-[var(--glass)]">
-                          <PartArt kind={product.art} hue={product.hue} className="h-full w-full" />
+                          <ProductImage product={product} width={60} />
                         </span>
                         <span className="min-w-0 flex-1 truncate text-sm font-bold">{product.name}</span>
                         <span className="shrink-0 text-sm text-muted">× {qty}</span>
@@ -384,7 +384,7 @@ export default function Checkout() {
               {totals.items.map(({ product, qty }) => (
                 <li key={product.id} className="flex items-center gap-3">
                   <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-[var(--glass)]">
-                    <PartArt kind={product.art} hue={product.hue} className="h-full w-full" />
+                    <ProductImage product={product} width={60} />
                     <span className="absolute -right-0 -top-0 grid h-5 min-w-5 place-items-center rounded-full bg-pink px-1 text-[0.6rem] font-extrabold text-white">{qty}</span>
                   </span>
                   <span className="line-clamp-2 text-xs font-bold">{product.name}</span>

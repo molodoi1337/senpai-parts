@@ -6,11 +6,11 @@ import { BookOpen, Car, CornerDownLeft, History, LayoutGrid, Search, Sparkles, X
 import { quickSearch } from '@/api/catalog'
 import { carTitle, makeById } from '@/data/cars'
 import { brandById } from '@/data/catalog-meta'
-import { PartArt } from '@/components/art/PartArt'
 import { CarSilhouette } from '@/components/art/CarSilhouette'
 import { useHotkey, useLockBody } from '@/lib/hooks'
 import { cn, formatPrice } from '@/lib/utils'
 import { useUi } from '@/store/ui'
+import { ProductImage } from '@/components/product/ProductImage'
 
 const popular = ['2JZ-GTE', 'колодки Supra', 'TE37', 'SR20DET', 'JZX100', 'койловеры', 'Jimny', 'масло 0W-20']
 const RECENT_KEY = 'senpai-recent-search'
@@ -79,7 +79,7 @@ export function CommandPalette() {
         sub: `${brandById[p.brandId].name} · OEM ${p.oem}`,
         to: `/product/${p.slug}`,
         right: formatPrice(p.price),
-        icon: <PartArt kind={p.art} hue={p.hue} bare className="h-full w-full" />,
+        icon: <ProductImage product={p} width={88} />,
       })),
       ...r.categories.map((c) => ({
         key: c.id,

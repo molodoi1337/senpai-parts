@@ -30,48 +30,67 @@ import { useActiveCar } from '@/store/garage'
 import { toast, useUi } from '@/store/ui'
 import { useUser } from '@/store/user'
 import { addDays, cn, formatDate, formatDay, formatNumber, formatPrice, plural } from '@/lib/utils'
+import { ProductImage } from '@/components/product/ProductImage'
+import { Photo } from '@/components/art/Photo'
+
+type Slide = { kind: 'photo'; id: string } | { kind: 'art'; variant: number; hue: number }
 
 function Gallery({ product }: { product: Product }) {
   const [idx, setIdx] = useState(0)
   const [origin, setOrigin] = useState<string | null>(null)
   const cat = categoryById[product.categoryId]
-  const hues = [product.hue, product.hue, product.hue, (product.hue + 160) % 360]
+  const art = (variant: number, hue: number, label?: string) => <PartArt kind={product.art} hue={hue} variant={variant} label={label} className="h-full w-full" />
+  // фото поставщика (если есть) идут первыми, иллюстрации — следом
+  const slides: Slide[] = [
+    ...(product.images ?? []).map((id) => ({ kind: 'photo' as const, id })),
+    { kind: 'art', variant: 0, hue: product.hue },
+    { kind: 'art', variant: 1, hue: product.hue },
+    { kind: 'art', variant: 2, hue: product.hue },
+    { kind: 'art', variant: 3, hue: (product.hue + 160) % 360 },
+  ].slice(0, 4) as Slide[]
+  const render = (s: Slide, size: number, label?: string) =>
+    s.kind === 'photo' ? <Photo id={s.id} alt={product.name} width={size} height={size} className="h-full w-full" fallback={art(0, product.hue, label)} /> : art(s.variant, s.hue, label)
+  const current = slides[idx] ?? slides[0]
+
   return (
-    <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-start">
-      <div className="no-scrollbar flex gap-2 overflow-x-auto sm:flex-col">
-        {[0, 1, 2, 3].map((i) => (
-          <button
-            key={i}
-            onClick={() => setIdx(i)}
-            className={cn('h-18 w-18 shrink-0 overflow-hidden rounded-2xl border-2 bg-[var(--glass)] transition sm:h-20 sm:w-20', idx === i ? 'border-pink' : 'border-transparent opacity-70 hover:opacity-100')}
-            aria-label={`Фото ${i + 1}`}
-          >
-            <PartArt kind={product.art} hue={hues[i]} variant={i} className="h-full w-full" />
-          </button>
-        ))}
-      </div>
-      <div
-        className="glass relative aspect-square w-full min-w-0 cursor-zoom-in overflow-hidden rounded-[32px] sm:flex-1"
-        onMouseMove={(e) => {
-          const r = e.currentTarget.getBoundingClientRect()
-          setOrigin(`${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`)
-        }}
-        onMouseLeave={() => setOrigin(null)}
-      >
-        <AnimatePresence mode="wait">
-          <motion.div key={idx} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="h-full w-full">
-            <div className="h-full w-full transition-transform duration-200" style={{ transform: origin ? 'scale(1.6)' : 'scale(1)', transformOrigin: origin ?? 'center' }}>
-              <PartArt kind={product.art} hue={hues[idx]} variant={idx} label={cat.jp} className="h-full w-full" />
-            </div>
-          </motion.div>
-        </AnimatePresence>
-        <div className="pointer-events-none absolute left-4 top-4">
-          <ProductStickers product={product} max={3} />
+    <div>
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-start">
+        <div className="no-scrollbar flex gap-2 overflow-x-auto sm:flex-col">
+          {slides.map((s, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              className={cn('h-18 w-18 shrink-0 overflow-hidden rounded-2xl border-2 bg-[var(--glass)] transition sm:h-20 sm:w-20', idx === i ? 'border-pink' : 'border-transparent opacity-70 hover:opacity-100')}
+              aria-label={`Фото ${i + 1}`}
+            >
+              {render(s, 80)}
+            </button>
+          ))}
         </div>
-        <span className="chip pointer-events-none absolute bottom-4 left-4 backdrop-blur-xl">
-          <RotateCcw size={13} /> 360° · наведи для зума
-        </span>
+        <div
+          className="glass relative aspect-square w-full min-w-0 cursor-zoom-in overflow-hidden rounded-[32px] sm:flex-1"
+          onMouseMove={(e) => {
+            const r = e.currentTarget.getBoundingClientRect()
+            setOrigin(`${((e.clientX - r.left) / r.width) * 100}% ${((e.clientY - r.top) / r.height) * 100}%`)
+          }}
+          onMouseLeave={() => setOrigin(null)}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div key={idx} initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="h-full w-full">
+              <div className="h-full w-full transition-transform duration-200" style={{ transform: origin ? 'scale(1.6)' : 'scale(1)', transformOrigin: origin ?? 'center' }}>
+                {render(current, 720, cat.jp)}
+              </div>
+            </motion.div>
+          </AnimatePresence>
+          <div className="pointer-events-none absolute left-4 top-4">
+            <ProductStickers product={product} max={3} />
+          </div>
+          <span className="chip pointer-events-none absolute bottom-4 left-4 backdrop-blur-xl">
+            <RotateCcw size={13} /> {current.kind === 'photo' ? 'Наведи для зума' : '360° · наведи для зума'}
+          </span>
+        </div>
       </div>
+      {product.images?.length ? <p className="mt-2 text-right text-xs text-faint">Фото может отличаться от товара — уточняй по OEM-номеру</p> : null}
     </div>
   )
 }
@@ -273,7 +292,7 @@ function Bundle({ product, items }: { product: Product; items: Product[] }) {
               <label className={cn('relative flex w-40 cursor-pointer flex-col rounded-2xl border p-2 transition sm:w-48', i === 0 || on[p.id] ? 'border-pink/50 bg-pink/5' : 'border-line opacity-60')}>
                 {i > 0 && <input type="checkbox" className="absolute right-3 top-3 h-4 w-4 accent-[var(--pink)]" checked={on[p.id]} onChange={() => setOn((s) => ({ ...s, [p.id]: !s[p.id] }))} />}
                 <span className="aspect-square overflow-hidden rounded-xl bg-[var(--glass)]">
-                  <PartArt kind={p.art} hue={p.hue} className="h-full w-full" />
+                  <ProductImage product={p} width={200} />
                 </span>
                 <span className="mt-2 line-clamp-2 text-xs font-bold">{p.name}</span>
                 <span className="mt-1 font-display text-sm font-extrabold">{formatPrice(p.price)}</span>

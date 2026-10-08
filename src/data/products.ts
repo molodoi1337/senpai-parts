@@ -1,6 +1,7 @@
 import { carGens, genById, makeById, type CarGen } from './cars'
 import { brandById, categoryById, type ArtKind } from './catalog-meta'
 import { createRng, slugify } from '@/lib/utils'
+import { templatePhotos } from './photos'
 
 export type PartType = 'oem' | 'analog' | 'tuning'
 export type Condition = 'new' | 'contract'
@@ -30,6 +31,8 @@ export interface Product {
   hue: number
   art: ArtKind
   description: string
+  /** id фото на CDN; если пусто — показываем иллюстрацию */
+  images?: string[]
   mileage?: number
   auction?: { house: string; lot: string; grade: string }
   createdAt: number
@@ -676,6 +679,7 @@ function generate(): Product[] {
         hue: (cat.hue + r.int(-28, 28) + 360) % 360,
         art: cat.art,
         description: `${t.desc} ${typeDescriptions[condition === 'contract' ? 'contract' : type]}`,
+        images: templatePhotos[t.name] ? [templatePhotos[t.name]] : undefined,
         createdAt,
       }
 

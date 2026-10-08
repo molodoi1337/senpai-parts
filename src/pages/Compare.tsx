@@ -3,7 +3,6 @@ import { ShoppingBag, Trash2, X } from 'lucide-react'
 import { useProductsByIds } from '@/api/hooks'
 import { brandById, categoryById } from '@/data/catalog-meta'
 import { Container, PageHeader } from '@/components/layout/Container'
-import { PartArt } from '@/components/art/PartArt'
 import { Rating } from '@/components/ui/Rating'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { FitBadge, compatLabel } from '@/components/product/FitBadge'
@@ -12,6 +11,7 @@ import { useCart } from '@/store/cart'
 import { toast } from '@/store/ui'
 import { cn, formatPrice } from '@/lib/utils'
 import { usePageTitle } from '@/lib/hooks'
+import { ProductImage } from '@/components/product/ProductImage'
 
 export default function Compare() {
   usePageTitle('Сравнение')
@@ -71,7 +71,7 @@ export default function Compare() {
                       <X size={14} />
                     </button>
                     <Link to={`/product/${p.slug}`} className="block aspect-square w-28 overflow-hidden rounded-2xl bg-[var(--glass)]">
-                      <PartArt kind={p.art} hue={p.hue} className="h-full w-full" />
+                      <ProductImage product={p} width={140} />
                     </Link>
                     <Link to={`/product/${p.slug}`} className="mt-2 line-clamp-2 font-bold hover:text-pink">
                       {p.name}

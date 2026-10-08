@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Search } from 'lucide-react'
 import { carGens, carMakes, carTitle, carYears, makeById } from '@/data/cars'
 import { Container, PageHeader } from '@/components/layout/Container'
-import { CarSilhouette } from '@/components/art/CarSilhouette'
+import { CarVisual } from '@/components/art/CarVisual'
 import { normalize, cn } from '@/lib/utils'
 import { usePageTitle } from '@/lib/hooks'
 
@@ -48,24 +48,23 @@ export default function Cars() {
           {list.map((g) => {
             const m = makeById[g.makeId]
             return (
-              <Link key={g.id} to={`/cars/${g.id}`} className="glass glass-hover group relative overflow-hidden rounded-[26px] p-4">
-                <span aria-hidden className="absolute inset-0 opacity-70" style={{ background: `radial-gradient(100% 60% at 50% 100%, hsl(${m.hue} 100% 60% / .25), transparent 70%)` }} />
-                <div className="relative flex items-start justify-between">
-                  <div>
-                    <p className="text-xs font-extrabold uppercase tracking-wider text-muted">{m.name}</p>
-                    <h3 className="font-display text-lg font-extrabold leading-tight">
-                      {g.model} <span className="text-pink">{g.gen}</span>
-                    </h3>
-                    <p className="text-xs text-muted">{carYears(g)} · {g.power} л.с.</p>
-                  </div>
-                  {g.legend && <span className="sticker sticker-pink">Легенда</span>}
+              <Link key={g.id} to={`/cars/${g.id}`} className="glass glass-hover group relative overflow-hidden rounded-[26px] p-2.5">
+                <div className="relative overflow-hidden rounded-[18px]">
+                  <CarVisual gen={g} width={320} />
+                  {g.legend && <span className="sticker sticker-pink absolute left-2.5 top-2.5">Легенда</span>}
                 </div>
-                <div className="relative -mx-2 mt-2 transition-transform duration-500 group-hover:translate-x-1.5">
-                  <CarSilhouette shape={g.shape} hue={m.hue} glow={false} />
+                <div className="px-1.5 pb-1 pt-3">
+                  <p className="text-xs font-extrabold uppercase tracking-wider text-muted">{m.name}</p>
+                  <h3 className="font-display text-lg font-extrabold leading-tight">
+                    {g.model} <span className="text-pink">{g.gen}</span>
+                  </h3>
+                  <p className="text-xs text-muted">
+                    {carYears(g)} · {g.power} л.с.
+                  </p>
+                  <p className="mt-1 truncate font-mono text-[0.7rem] text-faint">
+                    {g.chassis.join(' · ')} — {g.engines.join(' / ')}
+                  </p>
                 </div>
-                <p className="relative mt-1 truncate font-mono text-[0.7rem] text-faint">
-                  {g.chassis.join(' · ')} — {g.engines.join(' / ')}
-                </p>
               </Link>
             )
           })}

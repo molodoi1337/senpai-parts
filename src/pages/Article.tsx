@@ -5,6 +5,8 @@ import { ArrowLeft, Clock, Share2 } from 'lucide-react'
 import { articleBySlug, articles } from '@/data/blog'
 import { Container } from '@/components/layout/Container'
 import { PartArt } from '@/components/art/PartArt'
+import { Photo } from '@/components/art/Photo'
+import { articlePhotos } from '@/data/photos'
 import { Mascot } from '@/components/art/Mascot'
 import { ArticleCard } from '@/components/blog/ArticleCard'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -36,9 +38,16 @@ export default function Article() {
           <ArrowLeft size={15} /> Журнал
         </Link>
         <header className="glass relative mt-4 overflow-hidden rounded-[36px] p-6 sm:p-12">
-          <span aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(135deg, hsl(${a.hue} 90% 55% / .35), transparent 60%)` }} />
+          {articlePhotos[a.slug] ? (
+            <>
+              <Photo id={articlePhotos[a.slug]} alt={a.title} width={1200} height={600} eager className="!absolute inset-0 h-full w-full" />
+              <span aria-hidden className="absolute inset-0 bg-gradient-to-r from-[var(--bg-0)] via-[var(--bg-0)]/85 to-[var(--bg-0)]/20" />
+            </>
+          ) : (
+            <PartArt kind={a.art} hue={a.hue} bare className="absolute -right-10 top-1/2 hidden h-[120%] w-auto -translate-y-1/2 opacity-80 md:block" />
+          )}
+          <span aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(135deg, hsl(${a.hue} 90% 55% / .3), transparent 60%)` }} />
           <span aria-hidden className="halftone absolute inset-0 opacity-30 [mask-image:linear-gradient(90deg,transparent,black)]" />
-          <PartArt kind={a.art} hue={a.hue} bare className="absolute -right-10 top-1/2 hidden h-[120%] w-auto -translate-y-1/2 opacity-80 md:block" />
           <div className="relative max-w-2xl">
             <span className="sticker sticker-pink">{a.tag}</span>
             <p className="mt-4 font-jp text-lg font-bold tracking-[0.2em] text-pink">{a.jp}</p>

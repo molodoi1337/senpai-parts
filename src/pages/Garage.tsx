@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { carTitle, carYears, genById, makeById } from '@/data/cars'
 import { products, fitsCar } from '@/data/products'
 import { Container, PageHeader } from '@/components/layout/Container'
-import { CarSilhouette } from '@/components/art/CarSilhouette'
+import { CarVisual } from '@/components/art/CarVisual'
 import { CarPicker } from '@/components/garage/CarPicker'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { useGarage } from '@/store/garage'
@@ -80,8 +80,8 @@ export default function Garage() {
                     </span>
                   )}
                 </div>
-                <div className="relative -mx-2 my-3">
-                  <CarSilhouette shape={g.shape} hue={make.hue} plate={g.chassis[0].slice(0, 6)} />
+                <div className="relative my-3 overflow-hidden rounded-[20px]">
+                  <CarVisual gen={g} width={400} />
                 </div>
                 <dl className="relative grid grid-cols-3 gap-2 text-center text-xs">
                   {[

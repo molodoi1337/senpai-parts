@@ -4,7 +4,6 @@ import { motion } from 'framer-motion'
 import { Check, Eye, Heart, Scale, ShoppingBag } from 'lucide-react'
 import type { Product } from '@/data/products'
 import { brandById, categoryById } from '@/data/catalog-meta'
-import { PartArt } from '@/components/art/PartArt'
 import { Price } from '@/components/ui/Price'
 import { Rating } from '@/components/ui/Rating'
 import { useUi } from '@/store/ui'
@@ -13,6 +12,7 @@ import { useProductActions } from './useProductActions'
 import { FitBadge } from './FitBadge'
 import { ProductStickers } from './ProductStickers'
 import { StockLabel } from './StockLabel'
+import { ProductImage } from './ProductImage'
 
 interface Props {
   product: Product
@@ -31,7 +31,7 @@ function ProductCardBase({ product, view = 'grid', className }: Props) {
     return (
       <article className={cn('glass glass-hover group grid grid-cols-[110px_1fr] gap-4 rounded-3xl p-3 sm:grid-cols-[180px_1fr_auto] sm:p-4', className)}>
         <Link to={href} className="relative aspect-square overflow-hidden rounded-2xl bg-[var(--glass)]">
-          <PartArt kind={product.art} hue={product.hue} label={cat.jp} className="h-full w-full transition-transform duration-500 group-hover:scale-110" />
+          <ProductImage product={product} width={220} className="transition-transform duration-500 group-hover:scale-110" />
         </Link>
         <div className="min-w-0">
           <ProductStickers product={product} max={2} />
@@ -77,7 +77,7 @@ function ProductCardBase({ product, view = 'grid', className }: Props) {
     >
       <div className="shine relative aspect-square overflow-hidden rounded-[20px] bg-[var(--glass)]">
         <Link to={href} aria-label={product.name} className="block h-full w-full">
-          <PartArt kind={product.art} hue={product.hue} label={cat.jp} className="h-full w-full transition-transform duration-500 group-hover:scale-110 group-hover:rotate-2" />
+          <ProductImage product={product} width={320} className="transition-transform duration-500 group-hover:scale-110" />
         </Link>
         <div className="pointer-events-none absolute left-2 top-2">
           <ProductStickers product={product} max={2} />

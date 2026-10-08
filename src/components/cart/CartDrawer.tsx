@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, ShoppingBag, Trash2, X } from 'lucide-react'
 import { Drawer } from '@/components/ui/Overlay'
-import { PartArt } from '@/components/art/PartArt'
 import { QtyStepper } from '@/components/ui/QtyStepper'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { useCart, useCartTotals } from '@/store/cart'
 import { useUi } from '@/store/ui'
 import { formatPrice, pluralize } from '@/lib/utils'
 import { FreeShippingBar } from './FreeShippingBar'
+import { ProductImage } from '@/components/product/ProductImage'
 
 export function CartDrawer() {
   const open = useUi((s) => s.cartOpen)
@@ -52,7 +52,7 @@ export function CartDrawer() {
             {totals.items.map(({ product, qty, sum }) => (
               <li key={product.id} className="flex gap-3 rounded-2xl border border-line bg-[var(--glass)] p-2.5">
                 <Link to={`/product/${product.slug}`} onClick={close} className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[var(--glass-strong)]">
-                  <PartArt kind={product.art} hue={product.hue} className="h-full w-full" />
+                  <ProductImage product={product} width={100} />
                 </Link>
                 <div className="flex min-w-0 flex-1 flex-col">
                   <Link to={`/product/${product.slug}`} onClick={close} className="line-clamp-2 text-sm font-bold leading-snug hover:text-pink">

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, Gauge } from 'lucide-react'
 import { legends, makeById } from '@/data/cars'
-import { CarSilhouette } from '@/components/art/CarSilhouette'
+import { CarVisual } from '@/components/art/CarVisual'
 import { Container } from '@/components/layout/Container'
 import { SectionHeading } from '@/components/ui/SectionHeading'
 
@@ -26,24 +26,23 @@ export function Legends() {
               transition={{ delay: (i % 4) * 0.06 }}
               className="w-[82vw] max-w-[380px] shrink-0 snap-start"
             >
-              <Link to={`/cars/${g.id}`} className="glass glass-hover group relative flex h-full flex-col overflow-hidden rounded-[30px] p-5">
-                <span aria-hidden className="absolute inset-0" style={{ background: `radial-gradient(120% 70% at 50% 100%, hsl(${hue} 100% 60% / .35), transparent 70%)` }} />
-                <span aria-hidden className="halftone absolute inset-x-0 bottom-0 h-1/2 opacity-30 [mask-image:linear-gradient(transparent,black)]" />
-                <span aria-hidden className="kanji-vertical absolute right-4 top-4 text-3xl font-black text-fg/10">
-                  {g.jp}
-                </span>
-                <div className="relative">
-                  <span className="sticker sticker-pink">{g.nickname}</span>
-                  <p className="mt-3 text-xs font-extrabold uppercase tracking-widest text-muted">{makeById[g.makeId].name}</p>
+              <Link to={`/cars/${g.id}`} className="glass glass-hover group relative flex h-full flex-col overflow-hidden rounded-[30px] p-3">
+                <div className="relative overflow-hidden rounded-[22px]">
+                  <CarVisual gen={g} width={380} hue={hue} />
+                  <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-[#0d0820]/70 via-transparent to-transparent" />
+                  <span className="sticker sticker-pink absolute left-3 top-3">{g.nickname}</span>
+                  <span aria-hidden className="kanji-vertical absolute right-3 top-3 text-2xl font-black text-white/80 [text-shadow:0_2px_10px_rgba(0,0,0,.6)]">
+                    {g.jp}
+                  </span>
+                </div>
+                <div className="relative px-2 pt-4">
+                  <p className="text-xs font-extrabold uppercase tracking-widest text-muted">{makeById[g.makeId].name}</p>
                   <h3 className="font-display text-2xl font-extrabold leading-tight">
                     {g.model} <span className="text-pink">{g.gen}</span>
                   </h3>
                   <p className="mt-2 line-clamp-3 text-sm text-muted">{g.blurb}</p>
                 </div>
-                <div className="relative -mx-3 mt-4 transition-transform duration-500 group-hover:translate-x-2">
-                  <CarSilhouette shape={g.shape} hue={hue} plate={g.chassis[0].slice(0, 6)} />
-                </div>
-                <div className="relative mt-3 grid grid-cols-3 gap-2 text-center">
+                <div className="relative mt-4 grid grid-cols-3 gap-2 px-2 text-center">
                   {[
                     [g.engines[0], 'мотор'],
                     [`${g.power}`, 'л.с.'],
@@ -55,7 +54,7 @@ export function Legends() {
                     </div>
                   ))}
                 </div>
-                <span className="relative mt-4 inline-flex items-center gap-1.5 text-sm font-extrabold text-pink">
+                <span className="relative mt-auto inline-flex items-center gap-1.5 px-2 pb-2 pt-4 text-sm font-extrabold text-pink">
                   <Gauge size={16} /> Детали для неё <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
                 </span>
               </Link>

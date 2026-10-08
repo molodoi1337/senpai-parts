@@ -6,7 +6,7 @@ import { categories } from '@/data/catalog-meta'
 import { products } from '@/data/products'
 import { Container } from '@/components/layout/Container'
 import { Breadcrumbs } from '@/components/ui/Breadcrumbs'
-import { CarSilhouette } from '@/components/art/CarSilhouette'
+import { CarVisual } from '@/components/art/CarVisual'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { useGarage } from '@/store/garage'
@@ -80,8 +80,8 @@ export default function CarPage() {
               </a>
             </div>
           </div>
-          <div className="animate-float-slow">
-            <CarSilhouette shape={g.shape} hue={m.hue} plate={g.chassis[0].slice(0, 6)} />
+          <div className="relative overflow-hidden rounded-[28px] border border-line shadow-[0_30px_60px_-30px_rgba(0,0,0,.7)]">
+            <CarVisual gen={g} width={680} aspect="aspect-[4/3]" />
           </div>
         </div>
       </section>
