@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>SENPAI.PARTS — запчасти для японских авто</title>
+    <meta name="description" content="SENPAI.PARTS — интернет-магазин запчастей для японских автомобилей. OEM, тюнинг и контрактные детали с аукционов Японии. Toyota, Nissan, Honda, Mazda, Subaru, Mitsubishi." />
+    <meta name="theme-color" content="#0d0820" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700;800;900&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet" />
+    <script>
+      try {
+        var t = JSON.parse(localStorage.getItem('senpai-ui') || '{}');
+        if (t && t.state && t.state.theme) document.documentElement.dataset.theme = t.state.theme;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
