@@ -1,0 +1,236 @@
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Hash, ScanLine, Search, Star, Zap } from 'lucide-react'
+import { CarPicker } from '@/components/garage/CarPicker'
+import { CarSilhouette } from '@/components/art/CarSilhouette'
+import { Mascot } from '@/components/art/Mascot'
+import { PartArt } from '@/components/art/PartArt'
+import { Container } from '@/components/layout/Container'
+import { carTitle, genById } from '@/data/cars'
+import { useGarage } from '@/store/garage'
+import { toast } from '@/store/ui'
+import { cn } from '@/lib/utils'
+
+const tabs = [
+  { id: 'car', label: 'По авто', icon: Search },
+  { id: 'vin', label: 'VIN / кузов', icon: ScanLine },
+  { id: 'oem', label: 'Артикул', icon: Hash },
+] as const
+
+function HeroScene() {
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const sx = useSpring(mx, { stiffness: 60, damping: 18 })
+  const sy = useSpring(my, { stiffness: 60, damping: 18 })
+  const far = { x: useTransform(sx, (v) => v * -10), y: useTransform(sy, (v) => v * -6) }
+  const mid = { x: useTransform(sx, (v) => v * 14), y: useTransform(sy, (v) => v * 8) }
+  const near = { x: useTransform(sx, (v) => v * 26), y: useTransform(sy, (v) => v * 14) }
+
+  return (
+    <div
+      className="relative aspect-[6/5.4] w-full"
+      onPointerMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        mx.set((e.clientX - r.left) / r.width - 0.5)
+        my.set((e.clientY - r.top) / r.height - 0.5)
+      }}
+      onPointerLeave={() => {
+        mx.set(0)
+        my.set(0)
+      }}
+    >
+      <div className="glass absolute inset-0 overflow-hidden rounded-[36px]">
+        <motion.svg viewBox="0 0 600 540" className="absolute inset-0 h-full w-full" style={far} aria-hidden>
+          <defs>
+            <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#ffe36b" />
+              <stop offset=".55" stopColor="#ff6aa8" />
+              <stop offset="1" stopColor="#8f5cff" />
+            </linearGradient>
+            <mask id="sunStripes">
+              <rect width="600" height="540" fill="#fff" />
+              {[0, 1, 2, 3, 4, 5].map((i) => (
+                <rect key={i} x="0" y={262 + i * 22} width="600" height={4 + i * 2.4} fill="#000" />
+              ))}
+            </mask>
+            <linearGradient id="fuji" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#4b2b8f" />
+              <stop offset="1" stopColor="#1a0d33" />
+            </linearGradient>
+            <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="#ff4fa3" stopOpacity=".0" />
+              <stop offset="1" stopColor="#ff4fa3" stopOpacity=".25" />
+            </linearGradient>
+          </defs>
+          <circle cx="330" cy="250" r="150" fill="url(#sun)" mask="url(#sunStripes)" opacity=".95" />
+          <circle cx="330" cy="250" r="190" fill="none" stroke="#ff8fc4" strokeOpacity=".18" strokeWidth="2" strokeDasharray="4 10" />
+          <path d="M40,392 L210,248 Q236,226 262,226 L292,226 Q318,226 344,248 L560,392 Z" fill="url(#fuji)" />
+          <path d="M210,248 Q236,226 262,226 L292,226 Q318,226 344,248 L322,262 L300,250 L278,268 L256,252 L232,266 Z" fill="#fff" opacity=".92" />
+          {/* тории */}
+          <g transform="translate(70 250)" fill="#ff3d6e">
+            <rect x="0" y="0" width="150" height="14" rx="5" />
+            <rect x="12" y="26" width="126" height="9" />
+            <rect x="26" y="10" width="13" height="132" />
+            <rect x="111" y="10" width="13" height="132" />
+            <rect x="69" y="14" width="12" height="20" />
+          </g>
+          {/* сетка-пол */}
+          <rect x="0" y="392" width="600" height="148" fill="url(#floor)" />
+          {Array.from({ length: 15 }, (_, i) => (
+            <line key={`v${i}`} x1={300 + (i - 7) * 26} y1="392" x2={300 + (i - 7) * 120} y2="540" stroke="#ff7ab8" strokeOpacity=".35" strokeWidth="1.2" />
+          ))}
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <line key={`h${i}`} x1="0" x2="600" y1={392 + Math.pow(i, 1.7) * 9} y2={392 + Math.pow(i, 1.7) * 9} stroke="#3de8ff" strokeOpacity=".3" strokeWidth="1.2" />
+          ))}
+          <line x1="0" x2="600" y1="392" y2="392" stroke="#ff9fd0" strokeWidth="2" strokeOpacity=".7" />
+        </motion.svg>
+        <div className="speedlines absolute inset-0 opacity-40" />
+      </div>
+
+      {/* машина */}
+      <motion.div className="absolute inset-x-[4%] bottom-[7%]" style={near}>
+        <motion.div initial={{ x: -80, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: 0.3, type: 'spring', stiffness: 60, damping: 14 }}>
+          <div className="animate-float-slow">
+            <CarSilhouette shape="coupe" hue={330} plate="2JZ" />
+          </div>
+        </motion.div>
+      </motion.div>
+
+      {/* неоновая вывеска */}
+      <motion.div style={mid} className="absolute right-[5%] top-[7%]">
+        <div className="glass-strong rounded-2xl px-2.5 py-3">
+          <span className="kanji-vertical neon-pink text-2xl font-black sm:text-3xl">部品屋</span>
+        </div>
+      </motion.div>
+
+      {/* стикер */}
+      <motion.div style={mid} className="absolute left-[6%] top-[6%]">
+        <span className="sticker animate-wiggle text-[0.8rem]">New drop! 新作</span>
+      </motion.div>
+
+      {/* мини-карточка товара */}
+      <motion.div style={near} className="absolute right-[3%] top-[42%] hidden sm:block">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="glass-strong flex w-52 items-center gap-3 rounded-2xl p-2.5">
+          <span className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-[var(--glass)]">
+            <PartArt kind="coilover" hue={190} className="h-full w-full" />
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-xs font-bold">Койловеры Tein Flex Z</span>
+            <span className="flex items-center gap-1 text-[0.65rem] text-muted">
+              <Star size={10} className="fill-sun text-sun" /> 4.9 · 312 отзывов
+            </span>
+            <span className="mt-0.5 block font-display text-sm font-extrabold text-pink">89 990 ₽</span>
+          </span>
+        </motion.div>
+      </motion.div>
+
+      {/* маскот с репликой */}
+      <motion.div style={mid} className="absolute bottom-[38%] left-[2%] flex items-end gap-1 sm:bottom-[40%]">
+        <Mascot mood="wink" className="h-20 w-20 animate-float sm:h-24 sm:w-24" />
+        <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ delay: 0.9, type: 'spring' }} className="bubble mb-16 max-w-[170px] origin-bottom-left text-[0.72rem] leading-snug sm:mb-20 sm:text-xs">
+          Сэмпай, твоей Supra нужны новые колодки~ (◕‿◕)
+        </motion.div>
+      </motion.div>
+    </div>
+  )
+}
+
+export function Hero() {
+  const [tab, setTab] = useState<(typeof tabs)[number]['id']>('car')
+  const [value, setValue] = useState('')
+  const navigate = useNavigate()
+  const addCar = useGarage((s) => s.add)
+
+  return (
+    <section className="relative overflow-hidden pb-10 pt-6 sm:pt-10">
+      <Container className="grid items-center gap-10 lg:grid-cols-[1.05fr_1fr]">
+        <div className="relative">
+          <span aria-hidden className="pointer-events-none absolute -left-2 -top-10 select-none font-jp text-[5.5rem] font-black leading-none text-transparent opacity-20 [-webkit-text-stroke:1.5px_var(--pink)] sm:text-[8rem]">
+            日本車
+          </span>
+          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="relative flex flex-wrap items-center gap-2">
+            <span className="chip">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-lime" /> 1 284 гаражника онлайн
+            </span>
+            <span className="chip font-jp">🍁 秋 2026 · новый сезон</span>
+          </motion.div>
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+            className="section-title relative mt-5 text-[2.6rem] leading-[1.02] sm:text-6xl xl:text-7xl"
+          >
+            Запчасти для <span className="text-gradient">японцев.</span>
+            <br />
+            Вайб <span className="relative whitespace-nowrap">
+              — бесплатно
+              <svg viewBox="0 0 300 20" className="absolute -bottom-2 left-0 w-full" aria-hidden>
+                <path d="M4,14 Q80,2 150,10 T296,8" fill="none" stroke="var(--cyan)" strokeWidth="5" strokeLinecap="round" />
+              </svg>
+            </span>
+          </motion.h1>
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }} className="relative mt-6 max-w-xl text-base text-muted sm:text-lg">
+            OEM, тюнинг и контрактные агрегаты с аукционов Японии. Подбор по кузову за 5 секунд, доставка — от 24 часов. Без кринжа и переплат.
+          </motion.p>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }} className="glass relative mt-7 rounded-[26px] p-3 sm:p-4">
+            <div className="mb-3 flex gap-1.5" role="tablist">
+              {tabs.map(({ id, label, icon: Icon }) => (
+                <button key={id} role="tab" aria-selected={tab === id} onClick={() => setTab(id)} className={cn('chip h-9', tab === id && 'chip-active')}>
+                  <Icon size={14} /> {label}
+                </button>
+              ))}
+            </div>
+            {tab === 'car' ? (
+              <CarPicker
+                onPick={(genId, engine) => {
+                  addCar({ genId, engine })
+                  toast({ title: 'Тачка в гараже 🚗', description: `${carTitle(genById[genId])} — показываем подходящие детали`, tone: 'kawaii' })
+                  navigate('/catalog?fit=1')
+                }}
+              />
+            ) : (
+              <form
+                className="flex flex-col gap-2 sm:flex-row"
+                onSubmit={(e) => {
+                  e.preventDefault()
+                  if (!value.trim()) return
+                  navigate(tab === 'vin' ? `/vin?code=${encodeURIComponent(value.trim())}` : `/catalog?q=${encodeURIComponent(value.trim())}`)
+                }}
+              >
+                <input
+                  className="input font-display uppercase tracking-wider placeholder:normal-case placeholder:tracking-normal"
+                  placeholder={tab === 'vin' ? 'JZX100-0123456 или JT2…' : 'Например: 04465-33471'}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  aria-label={tab === 'vin' ? 'VIN или номер кузова' : 'Артикул'}
+                />
+                <button className="btn btn-primary shrink-0" type="submit">
+                  <Zap size={18} /> {tab === 'vin' ? 'Расшифровать' : 'Найти'}
+                </button>
+              </form>
+            )}
+          </motion.div>
+
+          <motion.dl initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} className="relative mt-7 grid max-w-lg grid-cols-3 gap-3">
+            {[
+              ['120k+', 'артикулов'],
+              ['2–7 дн', 'из Японии'],
+              ['4.9★', '18 000 отзывов'],
+            ].map(([v, l]) => (
+              <div key={l}>
+                <dt className="font-display text-2xl font-extrabold sm:text-3xl">{v}</dt>
+                <dd className="text-xs font-semibold text-muted">{l}</dd>
+              </div>
+            ))}
+          </motion.dl>
+        </div>
+
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1, duration: 0.6 }}>
+          <HeroScene />
+        </motion.div>
+      </Container>
+    </section>
+  )
+}
